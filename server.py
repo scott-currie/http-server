@@ -13,7 +13,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         """
         parsed_path = urlparse(self.path)
         parsed_qs = parse_qs(parsed_path.query)
-
+        print(parsed_qs)
         if parsed_path.path == '/':
             # Query the DB here - Then format your response
             self.send_response(200)
@@ -38,12 +38,17 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         pass
 
     def do_POST(self):
-        """
+        """Handle POST request. Parse the query looking for
+        a msg. If msg exists, send the cowpy formattted  msg
+        as a json string.
+
+        input: none
+        return: none
         """
         parsed_path = urlparse(self.path)
         parsed_qs = parse_qs(parsed_path.query)
-        print(parsed_qs)
         if parsed_path.path == '/cow':
+            # msg in query (200)
             if 'msg' in parsed_qs:
                 cowpied = cowpyify(parsed_qs['msg'][0])
                 json_string = json.dumps({'content': cowpied})
@@ -51,11 +56,14 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(json_string.encode())
                 return
+            # No msg in query (400)
             else:
                 self.send_response(400)
                 self.end_headers()
                 return
-
+        # Route doesn't exist (404)
+        self.send_response(404)
+        self.end_headers()
 
 def cowpyify(msg):
     cheese = cow.Moose()
