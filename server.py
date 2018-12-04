@@ -49,8 +49,7 @@ def create_server():
 
 
 def run_forever():
-    """
-    """
+    """Create the server instance."""
     server = create_server()
 
     try:
