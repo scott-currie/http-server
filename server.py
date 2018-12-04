@@ -2,6 +2,7 @@ from cowpy import cow
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 from urllib.parse import urlparse, parse_qs
+from cowpy import cow
 
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -15,22 +16,43 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         parsed_qs = parse_qs(parsed_path.query)
         print(parsed_qs)
         if parsed_path.path == '/':
-            # Query the DB here - Then format your response
-            self.send_response(200)
-            self.end_headers()
-            self.wfile.write(b'Welcome to our site.')
-            return
-
-        if parsed_path.path == '/hello':
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            self.wfile.write(
-                b'<html><body><h1>hello world!</h1></body></html>')
+            self.wfile.write(b'''<!DOCTYPE html>
+            <html>
+              <head>
+                <title> cowsay </title>
+              </head>
+              <body>
+               <header>
+                 <nav>
+                   <ul>
+                     <li><a href="/cowsay">cowsay</a></li>
+                   </ul>
+                 </nav>
+               <header>
+               <main>
+                 <p>This project is designed to test specific routes and return status messages accordingly</p>
+               </main>
+              </body>
+            </html>''')
             return
 
-        self.send_response(404)
-        self.end_headers()
+        elif parsed_path.path == '/cow':
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/html')
+            self.end_headers()
+            parsed_message = parsed_qs['msg'][0]
+            cheese = cow.Moose(eyes='dead')
+            msg = cheese.milk(parsed_message)
+            self.wfile.write(msg.encode())
+            return
+
+        else:
+            self.send_response(404)
+            self.end_headers()
+            self.wfile.write(b'Cow not found. Moo.')
 
     def do_HEAD(self):
         """
@@ -80,8 +102,7 @@ def create_server():
 
 
 def run_forever():
-    """
-    """
+    """Create the server instance."""
     server = create_server()
 
     try:
