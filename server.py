@@ -94,6 +94,11 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
 
 def cowpyify(msg):
+    """Pass a string through cowpy.
+
+    input: msg (str): string to modify
+    return: (str) new string wrapped in cowpy text
+    """
     cheese = cow.Moose()
     return cheese.milk(msg)
 
