@@ -1,5 +1,5 @@
 import pytest
-import http_server.server
+import server
 from multiprocessing import Process
 
 
