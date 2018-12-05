@@ -2,7 +2,6 @@ from cowpy import cow
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 from urllib.parse import urlparse, parse_qs
-from cowpy import cow
 
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
