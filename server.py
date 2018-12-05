@@ -69,6 +69,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         parsed_path = urlparse(self.path)
         parsed_qs = parse_qs(parsed_path.query)
         if parsed_path.path == '/cow':
+            print('parsed_qs=', parsed_qs)
             # msg in query (200)
             if 'msg' in parsed_qs:
                 cowpied = cowpyify(parsed_qs['msg'][0])
