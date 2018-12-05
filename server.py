@@ -9,7 +9,9 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
     """
 
     def do_GET(self):
-        """
+        """Handle GET request. Will serve both the root of the site as well
+        as allow the user to request a message that will be returned using the
+        cowpy package.
         """
         parsed_path = urlparse(self.path)
         parsed_qs = parse_qs(parsed_path.query)
@@ -115,8 +117,7 @@ def cowpyify(msg):
 
 
 def create_server():
-    """
-    """
+    """Creates a method for the creation of a basic HTTP server."""
     return HTTPServer(
         ('127.0.0.1', 5000),  # TODO: Make these ENV Vars
         SimpleHTTPRequestHandler
@@ -124,7 +125,7 @@ def create_server():
 
 
 def run_forever():
-    """Create the server instance."""
+    """Create the server instance using the above create_server method."""
     server = create_server()
 
     try:
