@@ -39,19 +39,30 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             return
 
         elif parsed_path.path == '/cow':
-            self.send_response(200)
-            self.send_header('Content-Type', 'text/html')
-            self.end_headers()
-            parsed_message = parsed_qs['msg'][0]
-            cheese = cow.Moose(eyes='dead')
-            msg = cheese.milk(parsed_message)
-            self.wfile.write(msg.encode())
-            return
+            try:
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/html')
+                self.end_headers()
+                parsed_message = parsed_qs['msg'][0]
+                cheese = cow.Moose(eyes='dead')
+                msg = cheese.milk(parsed_message)
+                self.wfile.write(msg.encode())
+                return
+
+            except KeyError:
+                self.send_response(400)
+                self.end_headers()
+                cheese = cow.Moose()
+                msg = cheese.milk('400 Bad Request')
+                self.wfile.write(msg.encode())
 
         else:
             self.send_response(404)
             self.end_headers()
             self.wfile.write(b'Cow not found. Moo.')
+
+        self.send_response(404)
+        self.end_headers()
 
     def do_HEAD(self):
         """
