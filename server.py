@@ -2,7 +2,6 @@ from cowpy import cow
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 from urllib.parse import urlparse, parse_qs
-from cowpy import cow
 
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -70,6 +69,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         parsed_path = urlparse(self.path)
         parsed_qs = parse_qs(parsed_path.query)
         if parsed_path.path == '/cow':
+            print('parsed_qs=', parsed_qs)
             # msg in query (200)
             if 'msg' in parsed_qs:
                 cowpied = cowpyify(parsed_qs['msg'][0])
@@ -83,11 +83,22 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 self.send_response(400)
                 self.end_headers()
                 return
+        # Post methods not allowed on / (400)
+        if parsed_path.path == '/':
+            self.send_response(400)
+            self.end_headers()
+            return
         # Route doesn't exist (404)
         self.send_response(404)
         self.end_headers()
 
+
 def cowpyify(msg):
+    """Pass a string through cowpy.
+
+    input: msg (str): string to modify
+    return: (str) new string wrapped in cowpy text
+    """
     cheese = cow.Moose()
     return cheese.milk(msg)
 
