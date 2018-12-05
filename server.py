@@ -83,9 +83,15 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 self.send_response(400)
                 self.end_headers()
                 return
+        # Post methods not allowed on / (400)
+        if parsed_path.path == '/':
+            self.send_response(400)
+            self.end_headers()
+            return
         # Route doesn't exist (404)
         self.send_response(404)
         self.end_headers()
+
 
 def cowpyify(msg):
     cheese = cow.Moose()
